@@ -1,0 +1,39 @@
+ComfyUI-LX-Nodes
+
+LX-owned contributions in this source distribution are licensed under
+GPL-3.0-only. See LICENSE. Third-party portions retain the notices and
+license terms described below. External models and packages retain their
+separate terms.
+
+1. Use Everywhere / cg-use-everywhere
+   Upstream: https://github.com/chrisgoringe/cg-use-everywhere
+   Maintainer: chrisgoringe; upstream contributors retain their rights.
+   Comparison revision: 50ae9f8c5d8b9538589663c90a15d4067a02969c
+   Portions: web/global_input/ and the mirrored _plugins/global_input/js/.
+   License: Apache License 2.0; full text in licenses/Apache-2.0.txt.
+   LX modifications: names, localization, import paths and ComfyUI integration.
+   The checked upstream tree has no separate NOTICE file. The comparison
+   revision identifies the inspected source, not a proven original intake date.
+
+2. ComfyUI-KJNodes Set/Get
+   Upstream: https://github.com/kijai/ComfyUI-KJNodes
+   Maintainer: kijai and contributors.
+   Comparison revision: d3cfe21625e5170126ce06fbfcfe1d88108688c3
+   Portions: web/set_get/lx_set_get.js.
+   License: GNU General Public License version 3; full text in LICENSE.
+   LX modifications: node identities, UI, graph traversal and integration.
+   Retained upstream attribution: originally based on diffus3's SetGet:
+   https://github.com/diffus3/ComfyUI-extensions
+   That repository also publishes a GPL version 3 license.
+
+3. rgthree-comfy drawing routines
+   Upstream: https://github.com/rgthree/rgthree-comfy
+   Copyright (c) 2023 Regis Gaughan, III (rgthree)
+   Comparison revision: 2c5342a8cb0eaecaabf61435a5f37dd594c510ba
+   Portions: group-control widget drawing in web/group_control/group_control.js
+   and _plugins/group_control/web/js/group_control.js.
+   License: MIT; full notice and permission text in licenses/rgthree-MIT.txt.
+   LX modifications: group controls and localized widgets.
+
+Source evidence and unresolved items: docs/THIRD_PARTY_SOURCES.md.
+External resource terms: docs/EXTERNAL_RESOURCES.md.

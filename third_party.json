@@ -1,0 +1,218 @@
+{
+  "review_date": "2026-10-18",
+  "components": [
+    {
+      "id": "use-everywhere",
+      "source": "https://github.com/chrisgoringe/cg-use-everywhere",
+      "comparison_revision": "50ae9f8c5d8b9538589663c90a15d4067a02969c",
+      "license": "Apache-2.0",
+      "license_file": "licenses/Apache-2.0.txt",
+      "paths": [
+        "web/global_input",
+        "_plugins/global_input/js"
+      ],
+      "header_marker": "Derived from cg-use-everywhere",
+      "license_sha256_lf": "50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a"
+    },
+    {
+      "id": "kjnodes-setget",
+      "source": "https://github.com/kijai/ComfyUI-KJNodes",
+      "comparison_revision": "d3cfe21625e5170126ce06fbfcfe1d88108688c3",
+      "license": "GPL-3.0-only",
+      "license_file": "LICENSE",
+      "paths": [
+        "web/set_get/lx_set_get.js"
+      ],
+      "header_marker": "Adapted from ComfyUI-KJNodes",
+      "license_sha256_lf": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "id": "rgthree-group-drawing",
+      "source": "https://github.com/rgthree/rgthree-comfy",
+      "comparison_revision": "2c5342a8cb0eaecaabf61435a5f37dd594c510ba",
+      "license": "MIT",
+      "license_file": "licenses/rgthree-MIT.txt",
+      "paths": [
+        "web/group_control/group_control.js",
+        "_plugins/group_control/web/js/group_control.js"
+      ],
+      "header_marker": "Drawing portions adapted from rgthree-comfy",
+      "license_sha256_lf": "5f9aac162ed876682edf804196fb2c3c76e8101c2bf198bf5034c67b046e3f04"
+    }
+  ],
+  "external_model_evidence": [
+    {
+      "repository": "1038lab/BEN2",
+      "revision": "7e1bfdf0b53c9d93d82ed2bccf240ba33b3aed38",
+      "declared_license": null,
+      "bundled": false,
+      "files": [
+        {
+          "path": "BEN2.py",
+          "sha256": null,
+          "git_blob": "6413d77174f96dbd6bd39ac4632ceee94edbda3c"
+        },
+        {
+          "path": "BEN2_Base.pth",
+          "sha256": "926144a876bda06f125555b4f5a239ece89dc6eb838a863700ca9bf192161a1c",
+          "git_blob": "d7549b2f1582f8662dd7b195bbdc426fcc985156"
+        }
+      ]
+    },
+    {
+      "repository": "PramaLLC/BEN2",
+      "revision": "e48a20765fb421d19dcdb0bf3cc61e802ca5ec8f",
+      "declared_license": "mit",
+      "bundled": false,
+      "files": [
+        {
+          "path": "BEN2.py",
+          "sha256": null,
+          "git_blob": "6413d77174f96dbd6bd39ac4632ceee94edbda3c"
+        },
+        {
+          "path": "BEN2_Base.pth",
+          "sha256": "926144a876bda06f125555b4f5a239ece89dc6eb838a863700ca9bf192161a1c",
+          "git_blob": "d7549b2f1582f8662dd7b195bbdc426fcc985156"
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "ea8b7907176a09667c86343dc7d00de6a6d871076cb90bb5f753618fd6fb3ebb",
+          "git_blob": "48094139a576da203b855fd33191016944cb4ac2"
+        }
+      ]
+    },
+    {
+      "repository": "1038lab/BiRefNet",
+      "revision": "4d000788a9698c7f8d67c8c6ce2b40c768f5b909",
+      "declared_license": null,
+      "bundled": false,
+      "files": [
+        {
+          "path": "BiRefNet-matting.safetensors",
+          "sha256": "a9875de5b1e6c8eb5fdaa8c727a82927ce442cdc87ba3abee6a77e6fa46c25bb",
+          "git_blob": "0b751a199714732a4d17a4658728f1399e790314"
+        },
+        {
+          "path": "BiRefNet_dynamic.safetensors",
+          "sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d",
+          "git_blob": "2744b15335ee7d7b3b5cd9a904d23932ef43e296"
+        },
+        {
+          "path": "birefnet.py",
+          "sha256": null,
+          "git_blob": "57eba49a236a93365582e59814641e01f4facaa8"
+        }
+      ]
+    },
+    {
+      "repository": "ZhengPeng7/BiRefNet-matting",
+      "revision": "eccde0a8cbdce7ac5fecfeb06340fe7b949e85d9",
+      "declared_license": "mit",
+      "bundled": false,
+      "files": [
+        {
+          "path": "birefnet.py",
+          "sha256": null,
+          "git_blob": "237ac4e21c0999b007381742a387ec1276e6c684"
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "a9875de5b1e6c8eb5fdaa8c727a82927ce442cdc87ba3abee6a77e6fa46c25bb",
+          "git_blob": "0b751a199714732a4d17a4658728f1399e790314"
+        }
+      ]
+    },
+    {
+      "repository": "ZhengPeng7/BiRefNet_dynamic",
+      "revision": "280306042f57b7a33854319da62fd86aaa89ec4c",
+      "declared_license": "mit",
+      "bundled": false,
+      "files": [
+        {
+          "path": "birefnet.py",
+          "sha256": null,
+          "git_blob": "237ac4e21c0999b007381742a387ec1276e6c684"
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "e3d2e4884e51ff30f0cd630edc6b1e41b06b7f23a0a2a5169f7b7cb33a711c2d",
+          "git_blob": "2744b15335ee7d7b3b5cd9a904d23932ef43e296"
+        }
+      ]
+    },
+    {
+      "repository": "1038lab/RMBG-2.0",
+      "revision": "1cd4787601caeb4c8e826dba7ea8e2163b5208df",
+      "declared_license": null,
+      "bundled": false,
+      "files": [
+        {
+          "path": "birefnet.py",
+          "sha256": null,
+          "git_blob": "1ed28de11ce84e5f6b2dbf2a0dbb66412bc28513"
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "566ed80c3d95f87ada6864d4cbe2290a1c5eb1c7bb0b123e984f60f76b02c3a7",
+          "git_blob": "121c871665f9d734c36f5be12556984df33667b1"
+        }
+      ]
+    },
+    {
+      "repository": "briaai/RMBG-2.0",
+      "revision": "5df4c9c76d8170882c34f6986e848ee07fd0ba43",
+      "declared_license": "other",
+      "bundled": false,
+      "files": [
+        {
+          "path": "birefnet.py",
+          "sha256": null,
+          "git_blob": "6d56778af0737ad21a8a877f79e534f848589f05"
+        },
+        {
+          "path": "model.safetensors",
+          "sha256": "566ed80c3d95f87ada6864d4cbe2290a1c5eb1c7bb0b123e984f60f76b02c3a7",
+          "git_blob": "121c871665f9d734c36f5be12556984df33667b1"
+        }
+      ]
+    },
+    {
+      "repository": "facebook/sam3.1",
+      "revision": "daa63191845a41281374e725f4c9e51c7a824460",
+      "declared_license": "SAM License",
+      "bundled": false,
+      "files": [
+        {
+          "path": "sam3.1_multiplex.pt",
+          "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
+        }
+      ]
+    },
+    {
+      "repository": "AEmotionStudio/sam3.1",
+      "revision": "694239a1479aab8fd1317c87c433c58acd7c6eab",
+      "declared_license": "SAM License",
+      "bundled": false,
+      "files": [
+        {
+          "path": "sam3.1_multiplex.pt",
+          "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
+        }
+      ]
+    },
+    {
+      "repository": "research21/sam3.1",
+      "revision": "3bd4a45137d9db4cb21c0119e7eb67deb69e339f",
+      "declared_license": "SAM License",
+      "bundled": false,
+      "files": [
+        {
+          "path": "sam3.1_multiplex.pt",
+          "sha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6"
+        }
+      ]
+    }
+  ],
+  "pending_license_scopes": []
+}

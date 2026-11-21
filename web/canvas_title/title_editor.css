@@ -1,0 +1,121 @@
+.lg-node-widgets:has(.lx-title-render),
+.lg-node-widget:has(.lx-title-render) *,
+.lx-title-render {
+    pointer-events: none;
+}
+
+.lx-title-render {
+    display: block;
+    flex: none;
+    user-select: none;
+}
+
+.lg-node:has(.lx-title-render) {
+    opacity: 1 !important;
+}
+
+.lg-node:has(.lx-title-render) [data-testid="node-inner-wrapper"]::before {
+    background-color: transparent !important;
+}
+
+[data-lx-canvas-title-editor] {
+    --lx-surface: #171b20;
+    --lx-field: #21272e;
+    --lx-line: #38434c;
+    --lx-text: #edf2f4;
+    --lx-dim: #a4b3bc;
+    --lx-accent: #8fe8b2;
+    box-sizing: border-box;
+    inline-size: min(600px, calc(100vw - 28px));
+    max-block-size: calc(100dvh - 28px);
+    padding: 0;
+    border: 1px solid var(--lx-line);
+    border-radius: 14px;
+    background: var(--lx-surface);
+    color: var(--lx-text);
+    color-scheme: dark;
+    font: 14px/1.4 "Microsoft YaHei UI", "PingFang SC", sans-serif;
+    box-shadow: 0 22px 64px #0009;
+}
+[data-lx-canvas-title-editor]::backdrop { background: #090d11a6; }
+[data-lx-canvas-title-editor] * { box-sizing: border-box; }
+[data-lx-canvas-title-editor] form { display: grid; gap: 10px; padding: 18px 20px; }
+[data-lx-canvas-title-editor] header { display: flex; justify-content: space-between; align-items: start; }
+[data-lx-canvas-title-editor] h2 { margin: 0; font-size: 21px; font-weight: 650; }
+[data-lx-canvas-title-editor] .lx-title-preview {
+    min-inline-size: 0;
+    overflow: hidden;
+    block-size: 108px;
+    border: 1px solid var(--lx-line);
+    border-radius: 8px;
+    background: radial-gradient(circle, #3a444a 1px, transparent 1.2px) 0 0 / 14px 14px, #11161a;
+}
+[data-lx-canvas-title-editor] canvas { display: block; inline-size: 100%; block-size: 106px; }
+[data-lx-canvas-title-editor] label { font-weight: 550; }
+[data-lx-canvas-title-editor] textarea,
+[data-lx-canvas-title-editor] input:not([type="checkbox"]),
+[data-lx-canvas-title-editor] select,
+[data-lx-canvas-title-editor] button {
+    font: inherit;
+    color: inherit;
+    border: 1px solid var(--lx-line);
+    border-radius: 6px;
+    background: var(--lx-field);
+}
+[data-lx-canvas-title-editor] textarea { min-block-size: 55px; padding: 7px 9px; resize: vertical; }
+[data-lx-canvas-title-editor] input:not([type="checkbox"]), [data-lx-canvas-title-editor] select { min-block-size: 29px; padding: 3px 6px; }
+[data-lx-canvas-title-editor] button { min-block-size: 28px; padding: 3px 9px; cursor: pointer; }
+[data-lx-canvas-title-editor] button:hover { background: #303b43; }
+[data-lx-canvas-title-editor] :is(button,textarea,input,select):focus-visible { outline: 2px solid var(--lx-accent); outline-offset: 2px; }
+[data-lx-canvas-title-editor] [data-close] { inline-size: 31px; padding: 0; font-size: 21px; }
+[data-lx-canvas-title-editor] .lx-title-presets,
+[data-lx-canvas-title-editor] .lx-title-extras,
+[data-lx-canvas-title-editor] footer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+[data-lx-canvas-title-editor] [data-presets] { display: flex; flex-wrap: wrap; gap: 6px; }
+[data-lx-canvas-title-editor] .lx-title-fields {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.08fr) minmax(156px, 1fr);
+    gap: 12px;
+}
+[data-lx-canvas-title-editor] .lx-title-fields section {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    min-inline-size: 0;
+    padding: 10px;
+    border: 1px solid var(--lx-line);
+    border-radius: 9px;
+}
+[data-lx-canvas-title-editor] .lx-title-colors { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+[data-lx-canvas-title-editor] .lx-title-colors button {
+    overflow: hidden;
+    block-size: 27px;
+    min-block-size: 0;
+    padding: 0;
+    border-color: #ffffff25;
+    font-size: 0;
+    background: var(--swatch);
+}
+[data-lx-canvas-title-editor] .lx-title-colors button:hover { background: var(--swatch); outline: 1px solid #fff; }
+[data-lx-canvas-title-editor] .lx-title-colors button[aria-pressed="true"] { outline: 2px solid var(--lx-text); outline-offset: 1px; }
+[data-lx-canvas-title-editor] .lx-title-sizes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+[data-lx-canvas-title-editor] .lx-title-sizes button { padding-inline: 3px; font-size: 12px; font-variant-numeric: tabular-nums; }
+[data-lx-canvas-title-editor] .lx-title-sizes button[aria-pressed="true"] { border-color: var(--lx-accent); color: var(--lx-accent); }
+[data-lx-canvas-title-editor] .lx-title-custom-color, [data-lx-canvas-title-editor] .lx-title-size-input { display: flex; gap: 6px; align-items: center; }
+[data-lx-canvas-title-editor] [data-field="hex"], [data-lx-canvas-title-editor] [data-field="fontSize"] { inline-size: 82px; font-variant-numeric: tabular-nums; }
+[data-lx-canvas-title-editor] input[type="color"] { inline-size: 35px; padding: 3px; cursor: pointer; }
+[data-lx-canvas-title-editor] .lx-title-extras { column-gap: 14px; }
+[data-lx-canvas-title-editor] .lx-title-extras label { display: flex; align-items: center; gap: 6px; }
+[data-lx-canvas-title-editor] [data-directions] { display: inline-flex; gap: 4px; }
+[data-lx-canvas-title-editor] [data-directions][hidden] { display: none; }
+[data-lx-canvas-title-editor] [data-direction] { inline-size: 29px; padding-inline: 0; }
+[data-lx-canvas-title-editor] [data-direction][aria-pressed="true"] { border-color: var(--lx-accent); color: var(--lx-accent); }
+[data-lx-canvas-title-editor] .lx-title-align-hint { color: var(--lx-dim); }
+[data-lx-canvas-title-editor] footer { padding-top: 6px; border-top: 1px solid var(--lx-line); }
+[data-lx-canvas-title-editor] footer small { margin-inline-end: auto; color: var(--lx-dim); }
+[data-lx-canvas-title-editor] button[type="submit"] { min-inline-size: 67px; color: #142a1f; background: var(--lx-accent); font-weight: 700; }
+[data-lx-canvas-title-editor] button[type="submit"]:hover { background: #b8f6d0; }
+@media (max-width: 420px) {
+    [data-lx-canvas-title-editor] .lx-title-fields { grid-template-columns: minmax(0, 1fr); }
+    [data-lx-canvas-title-editor] form { padding-inline: 13px; }
+}

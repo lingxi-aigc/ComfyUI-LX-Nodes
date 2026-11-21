@@ -1,0 +1,8 @@
+{
+  "project": "ComfyUI-LX-Nodes",
+  "version": "0.1.0-rc.4",
+  "stage": "public",
+  "authorization_review": "complete",
+  "license": "GPL-3.0-only",
+  "runtime_validation": "complete"
+}

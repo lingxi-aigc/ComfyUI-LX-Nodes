@@ -1,0 +1,37 @@
+{
+  "last_node_id": 2,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LXText",
+      "pos": [100, 180],
+      "size": [320, 180],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [{"name": "文本", "type": "STRING", "links": [1], "slot_index": 0}],
+      "properties": {"Node name for S&R": "LXText"},
+      "widgets_values": ["你好，灵犀！这是一个无需模型和 API Key 的文本示例。"]
+    },
+    {
+      "id": 2,
+      "type": "LXShowText",
+      "pos": [500, 180],
+      "size": [360, 180],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [{"name": "text", "type": "STRING", "link": 1}],
+      "outputs": [{"name": "字符串", "type": "STRING", "links": null, "slot_index": 0}],
+      "properties": {"Node name for S&R": "LXShowText"},
+      "widgets_values": []
+    }
+  ],
+  "links": [[1, 1, 0, 2, 0, "STRING"]],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

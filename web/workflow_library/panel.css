@@ -1,0 +1,618 @@
+.lx-wl-host {
+    height: 100%;
+    min-height: 0;
+}
+
+.lx-wl {
+    --lx-wl-accent: var(--primary-background, #56a9e8);
+    --lx-wl-line: var(--interface-stroke, color-mix(in srgb, currentColor 15%, transparent));
+    --lx-wl-soft: var(--secondary-background, color-mix(in srgb, currentColor 7%, transparent));
+    --lx-wl-hover: var(--interface-panel-hover-surface, color-mix(in srgb, currentColor 12%, transparent));
+    --lx-wl-muted: var(--descrip-text, color-mix(in srgb, currentColor 65%, transparent));
+    --lx-wl-selection: color-mix(in srgb, currentColor 14%, var(--lx-wl-surface));
+    --lx-wl-active: var(--interface-panel-selected-surface, color-mix(in srgb, currentColor 19%, var(--lx-wl-surface)));
+    --lx-wl-surface: var(--interface-panel-surface, Canvas);
+    --lx-wl-foreground: var(--base-foreground, CanvasText);
+    --lx-wl-focus: var(--ring, var(--lx-wl-muted));
+    --lx-wl-panel-pad: 16px;
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
+    padding: 0 var(--lx-wl-panel-pad) 8px;
+    color: var(--lx-wl-foreground);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.lx-wl *,
+.lx-wl *::before,
+.lx-wl *::after {
+    box-sizing: border-box;
+}
+
+.lx-wl [hidden] {
+    display: none !important;
+}
+
+.lx-wl-header {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 64px;
+    flex-wrap: nowrap;
+    margin-inline: calc(-1 * var(--lx-wl-panel-pad));
+    padding-inline: var(--lx-wl-panel-pad);
+    border-bottom: 1px solid var(--lx-wl-line);
+}
+
+.lx-wl-header-buttons,
+.lx-wl-dialog-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lx-wl-header-buttons {
+    flex: none;
+    gap: 4px;
+}
+
+.lx-wl-heading,
+.lx-wl-dialog-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.lx-wl-heading {
+    min-width: 0;
+    overflow: hidden;
+    font-size: var(--text-base, 16px);
+    line-height: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lx-wl-button {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 28px;
+    padding: 3px 7px;
+    border: 1px solid var(--lx-wl-line);
+    border-radius: 5px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.lx-wl-button:hover:not(:disabled) {
+    background: var(--lx-wl-hover);
+}
+
+.lx-wl-button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.lx-wl button:focus-visible,
+.lx-wl input:focus-visible,
+.lx-wl summary:focus-visible,
+.lx-wl-files:focus-visible,
+.lx-wl [role="treeitem"]:focus-visible {
+    outline: 2px solid var(--lx-wl-focus);
+    outline-offset: -2px;
+}
+
+.lx-wl-square {
+    display: grid;
+    place-items: center;
+    height: 32px;
+    min-width: 32px;
+    padding-inline: 6px;
+    border-color: transparent;
+    border-radius: 8px;
+    line-height: 1;
+    color: var(--lx-wl-muted);
+}
+
+.lx-wl-square:hover,
+.lx-wl-more[open] > summary {
+    color: var(--lx-wl-foreground);
+}
+
+.lx-wl-more[open] > summary {
+    background: var(--lx-wl-hover);
+}
+
+.lx-wl-create-button {
+    display: inline-flex;
+    padding-inline: 6px;
+    font-size: 12px;
+}
+
+@container (max-width: 235px) {
+    .lx-wl-create-button {
+        display: grid;
+        padding-inline: 4px;
+    }
+
+    .lx-wl-create-label {
+        display: none;
+    }
+}
+
+.lx-wl-primary {
+    border-color: color-mix(in srgb, var(--lx-wl-accent) 55%, var(--lx-wl-line));
+    background: var(--lx-wl-active);
+    font-weight: 600;
+}
+
+.lx-wl-primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--lx-wl-accent) 25%, var(--lx-wl-soft));
+}
+
+.lx-wl-more {
+    position: relative;
+}
+
+.lx-wl-more-content {
+    position: absolute;
+    z-index: 3;
+    inset: calc(100% + 5px) 0 auto auto;
+    width: max-content;
+    max-width: min(230px, 75vw);
+    padding: 9px;
+    border: 1px solid var(--lx-wl-line);
+    border-radius: 6px;
+    background: var(--popover, var(--lx-wl-surface));
+    color: var(--lx-wl-foreground);
+    box-shadow: var(--interface-floating-panel-shadow, 0 6px 18px #0003);
+}
+
+.lx-wl-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.lx-wl-check input {
+    accent-color: var(--lx-wl-accent);
+}
+
+.lx-wl-search-box {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    height: 32px;
+    margin-block: 8px;
+    padding: 0 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--lx-wl-soft);
+}
+
+.lx-wl-search-box:focus-within {
+    border-color: var(--lx-wl-focus);
+}
+
+.lx-wl-search-box:focus-within .lx-wl-glyph {
+    color: var(--lx-wl-foreground);
+}
+
+.lx-wl-search,
+.lx-wl-name-input {
+    width: 100%;
+    min-width: 0;
+    min-height: 31px;
+    padding: 5px 9px;
+    border: 1px solid var(--lx-wl-line);
+    border-radius: 6px;
+    background: var(--lx-wl-soft);
+    color: inherit;
+    font: inherit;
+}
+
+.lx-wl-search {
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: var(--text-xs, 12px);
+    line-height: var(--text-xs--line-height, 16px);
+}
+
+.lx-wl .lx-wl-search:focus-visible {
+    outline: none;
+}
+
+.lx-wl-search::placeholder {
+    color: var(--lx-wl-muted);
+}
+
+.lx-wl summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.lx-wl summary::-webkit-details-marker {
+    display: none;
+}
+
+.lx-wl-context-menu {
+    position: fixed;
+    z-index: 9;
+    inset: auto;
+    display: flex;
+    flex-direction: column;
+    min-width: min(192px, calc(100vw - 8px));
+    max-width: calc(100vw - 8px);
+    margin: 0;
+    padding: 4px;
+    border: 1px solid var(--lx-wl-line);
+    border-radius: 8px;
+    background: var(--popover, var(--lx-wl-surface));
+    color: var(--lx-wl-foreground);
+    box-shadow: var(--interface-floating-panel-shadow, 0 6px 18px #0003);
+}
+
+.lx-wl-context-item {
+    justify-content: start;
+    width: 100%;
+    gap: 8px;
+    min-height: 32px;
+    padding: 6px 12px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.lx-wl .lx-wl-context-item:focus-visible {
+    background: var(--lx-wl-hover);
+    outline: none;
+}
+
+.lx-wl-context-separator {
+    height: 1px;
+    margin-block: 2px;
+    background: var(--lx-wl-line);
+}
+
+.lx-wl-browse-heading {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    margin: 0 calc(8px - var(--lx-wl-panel-pad)) 4px;
+    font-size: var(--text-base, 16px);
+    font-weight: 400;
+    line-height: normal;
+}
+
+.lx-wl-browse-heading::after {
+    flex: 1;
+    border-top: 1px dashed var(--lx-wl-line);
+    content: "";
+}
+
+.lx-wl-files {
+    flex: 1 1 130px;
+    min-height: 0;
+    margin-inline: calc(-1 * var(--lx-wl-panel-pad));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.lx-wl-files:has(.lx-wl-root-row:not([hidden])) {
+    scroll-padding-block-start: 38px;
+}
+
+.lx-wl-tree {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-inline: 8px;
+}
+
+.lx-wl-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-block: var(--tree-item-padding, 8px);
+    padding-inline-start: calc(8px + min(var(--lx-depth) * 24px, max(0px, 100cqi - 112px)));
+    padding-inline-end: 8px;
+    border-radius: var(--radius-sm, 4px);
+    font-size: var(--text-sm, 14px);
+    font-weight: var(--font-weight-normal, 400);
+    line-height: var(--text-sm--line-height, 20px);
+    cursor: pointer;
+    user-select: none;
+}
+
+.lx-wl-row:hover {
+    background: var(--lx-wl-hover);
+}
+
+.lx-wl-root-row {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    margin-bottom: 2px;
+    border-radius: 0;
+    background: var(--lx-wl-surface);
+    box-shadow: 0 1px 0 var(--lx-wl-line);
+    color: var(--lx-wl-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.lx-wl-row[aria-selected="true"] {
+    background: var(--lx-wl-selection);
+}
+
+.lx-wl-row.is-active {
+    background: var(--lx-wl-active);
+}
+
+.lx-wl-row.is-dragging {
+    opacity: 0.55;
+}
+
+.lx-wl-row.is-drop-target {
+    background: color-mix(in srgb, var(--lx-wl-accent) 21%, var(--lx-wl-hover));
+    box-shadow: inset 0 -2px var(--lx-wl-accent);
+}
+
+.lx-wl-row.is-drop-before {
+    box-shadow: inset 0 2px var(--lx-wl-accent);
+}
+
+.lx-wl-row.is-drop-after {
+    box-shadow: inset 0 -2px var(--lx-wl-accent);
+}
+
+.lx-wl-drag-preview {
+    position: fixed;
+    z-index: 5;
+    padding: 5px 9px;
+    border: 1px solid var(--lx-wl-accent);
+    border-radius: 6px;
+    background: var(--popover, var(--lx-wl-surface));
+    color: var(--lx-wl-foreground);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.lx-wl-entry-label {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.lx-wl-row .lx-wl-pin {
+    flex: none;
+    width: 13px;
+    height: 13px;
+    color: var(--lx-wl-accent);
+}
+
+.lx-wl-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lx-wl-folder-count {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    min-height: 20px;
+    padding-inline: 6px;
+    border-radius: 999px;
+    background: var(--lx-wl-soft);
+    color: var(--lx-wl-foreground);
+    font-size: var(--text-xs, 12px);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: var(--text-xs--line-height, 16px);
+    white-space: nowrap;
+}
+
+.lx-wl-tree-slot {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.lx-wl-glyph {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    color: inherit;
+}
+
+.lx-wl .lx-wl-file-glyph {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.lx-wl-row .lx-wl-glyph,
+.lx-wl-search-box .lx-wl-glyph {
+    color: var(--lx-wl-muted);
+}
+
+.lx-wl-row .lx-wl-folder-open,
+.lx-wl-row[aria-expanded="true"] .lx-wl-folder-closed,
+.lx-wl-root-row .lx-wl-folder-closed {
+    display: none;
+}
+
+.lx-wl-row[aria-expanded="true"] .lx-wl-folder-open,
+.lx-wl-root-row .lx-wl-folder-open {
+    display: inline-block;
+}
+
+.lx-wl-twisty {
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.lx-wl-twisty:hover {
+    background: var(--lx-wl-hover);
+}
+
+.lx-wl-twisty .lx-wl-glyph {
+    transition: transform var(--default-transition-duration, 150ms) ease;
+}
+
+.lx-wl-row[aria-expanded="true"] .lx-wl-twisty .lx-wl-glyph {
+    transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lx-wl-twisty .lx-wl-glyph {
+        transition: none;
+    }
+}
+
+.lx-wl-empty {
+    margin: 0;
+    padding: 5px 7px;
+    color: var(--lx-wl-muted);
+    font-size: 12px;
+}
+
+.lx-wl-status {
+    flex: none;
+    margin: 6px 0 0;
+    padding: 5px 7px;
+    border-radius: 4px;
+    background: var(--lx-wl-soft);
+    color: inherit;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.lx-wl-status.is-drag-status {
+    position: absolute;
+    z-index: 3;
+    inset: auto var(--lx-wl-panel-pad) 8px;
+    margin: 0;
+    background: var(--popover, var(--lx-wl-surface));
+    box-shadow: 0 0 0 1px var(--lx-wl-line);
+    pointer-events: none;
+}
+
+.lx-wl-dialog {
+    width: min(430px, calc(100vw - 32px));
+    max-height: min(76vh, 560px);
+    padding: 16px;
+    overflow: auto;
+    border: 1px solid var(--lx-wl-line);
+    border-radius: 8px;
+    background: var(--popover, var(--lx-wl-surface));
+    color: var(--lx-wl-foreground);
+    box-shadow: var(--interface-floating-panel-shadow, 0 14px 48px #0004);
+}
+
+.lx-wl-dialog::backdrop {
+    background: #0006;
+}
+
+.lx-wl-dialog-form,
+.lx-wl-dialog-fields,
+.lx-wl-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+}
+
+.lx-wl-dialog-path,
+.lx-wl-dialog-error {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--lx-wl-muted);
+}
+
+.lx-wl-dialog-error {
+    color: var(--error-text, #dc5555);
+}
+
+.lx-wl-delete-target {
+    margin: 0;
+    padding: 6px 8px;
+    border-radius: 5px;
+    background: var(--lx-wl-soft);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
+
+.lx-wl-danger-button {
+    border-color: var(--error-text, #d74c4c);
+    background: color-mix(in srgb, var(--error-text, #d74c4c) 14%, transparent);
+    font-weight: 600;
+}
+
+.lx-wl-danger-button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--error-text, #d74c4c) 24%, transparent);
+}
+
+.lx-wl-dialog-actions {
+    justify-content: flex-end;
+}
+
+.lx-wl-move-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: min(42vh, 290px);
+    overflow: auto;
+}
+
+.lx-wl-move-option {
+    justify-content: start;
+    width: 100%;
+    overflow: hidden;
+    text-align: start;
+    text-overflow: ellipsis;
+}
+
+.lx-wl-move-option[aria-pressed="true"] {
+    border-color: var(--lx-wl-accent);
+    background: var(--lx-wl-selection);
+}

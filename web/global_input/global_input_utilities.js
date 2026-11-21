@@ -1,0 +1,385 @@
+/*
+ * Derived from cg-use-everywhere (chrisgoringe and contributors), Apache-2.0.
+ * Modified for LX-Nodes: naming, localization and ComfyUI integration.
+ * See NOTICE and licenses/Apache-2.0.txt for attribution and terms.
+ */
+import { app } from "../../../../scripts/app.js";
+import { settingsCache } from "./global_input_cache.js";
+import { link_is_from_subgraph_input, visible_graph, wrap_input, connection_from_output_as_input, get_subgraph_input_type } from "./global_input_subgraph_utils.js";
+import { i18n } from "./i18n.js";
+import { ue_callbacks } from "./recursive_callbacks.js";
+import { shared } from "./shared.js";
+
+export function create( tag, clss, parent, properties ) {
+    const nd = document.createElement(tag);
+    if (clss)       clss.split(" ").forEach((s) => nd.classList.add(s))
+    if (parent)     parent.appendChild(nd);
+    if (properties) Object.assign(nd, properties);
+    return nd;
+}
+
+/*
+Return  1 if x is  a   later version than y (or y is not defined)
+Return -1 if x is an earlier version than y (or x is not defined)
+Return  0 if they are the same version 
+*/
+function version_compare(x,y) {
+    if (x==y) return  0
+    if (!y)   return  1
+    if (!x)   return -1
+    const xbits = x.split('.')
+    const ybits = y.split('.')
+    var result = 0
+    for (var i=0; result!=0 && i<Math.min(xbits.length, ybits.length); i++) {
+        if (parseInt(xbits[i]) < parseInt(ybits[i])) result = -1
+        if (parseInt(xbits[i]) > parseInt(ybits[i])) result = 1
+    }
+    if (result==0) {
+        if (xbits.length < ybits.length) result = -1
+        if (xbits.length > ybits.length) result = 1
+    }
+    return result
+}
+
+export function version_at_least(x,y) {
+    return (version_compare(x,y) >= 0)
+}
+
+/*
+Return the node object for this node_id. 
+*/
+export function get_real_node(node_id, graph) {
+    if (!graph) graph = visible_graph()
+    const nid = node_id.toString();
+    if (nid==-10) return wrap_input(graph.inputNode); // special case for subgraph input
+    if (nid==-20) return wrap_input(graph.outputNode); // special case for subgraph input
+    return graph.getNodeById(nid);
+}
+
+export class Logger {
+    static LIMITED_LOG_BLOCKED = false;
+    static LIMITED_LOG_MS      = 5000;
+    static level;  // 0 for errors only, 1 activates 'log_problem', 2 activates 'log_info', 3 activates 'log_detail'
+
+    static log_shared(message, trace, limited) {
+        if (limited && Logger.check_limited()) return false
+        console.log(message)
+        if (trace) console.trace()
+        shared.report_keys.forEach((key)=>{
+            console.log( `${key.padStart(40,' ')} = ${shared[key]}` )
+        })
+    }
+
+    static log_arguments(a) {
+        Object.keys(arguments).forEach((k)=>{console.log(arguments[k])})
+    }
+
+    static log_error(message, more) { 
+        if (more) console.log(more)
+        console.error(message)
+    }
+
+    static log(message, foreachable, limited) {
+        if (limited && Logger.check_limited()) return false
+        console.log(message);
+        foreachable?.forEach((x)=>{console.log(x)})
+        return true
+    }
+
+    static log_with_trace() { 
+        if (Logger.log(arguments)) console.trace()
+    }
+
+    static check_limited() {
+        if (Logger.LIMITED_LOG_BLOCKED) return true
+        Logger.LIMITED_LOG_BLOCKED = true
+        setTimeout( ()=>{Logger.LIMITED_LOG_BLOCKED = false}, Logger.LIMITED_LOG_MS )
+        return false
+    }
+
+    static null() {}
+
+    static level_changed(new_level) {
+        Logger.level = new_level    
+        Logger.log_detail  = (Logger.level>=3) ? Logger.log : Logger.null
+        Logger.log_info    = (Logger.level>=2) ? Logger.log : Logger.null
+        Logger.log_problem = (Logger.level>=1) ? Logger.log_with_trace : Logger.null
+    }
+
+    static log_detail(){}
+    static log_info(){}
+    static log_problem(){}
+}
+
+Logger.level_changed(settingsCache.getSettingValue('Global Input.Options.logging'))
+settingsCache.addCallback('Global Input.Options.logging', Logger.level_changed)
+
+class GraphConverter {
+    static _instance;
+    static instance() {
+        if (!GraphConverter._instance) GraphConverter._instance = new GraphConverter();
+        return GraphConverter._instance;
+    }
+
+    constructor() { 
+        this.node_input_map = {};
+        this.given_message = false;
+        this.did_conversion = false;
+     }
+
+    //running_116_plus() {
+    //    const version = __COMFYUI_FRONTEND_VERSION__.split('.')
+    //    return (parseInt(version[0])>=1 && (parseInt(version[0])>1 || parseInt(version[1])>=16))
+    //}
+
+    store_node_input_map(data) { 
+        this.node_input_map = {};
+        data?.nodes.filter((node)=>(node.inputs)).forEach((node) => {
+            this.node_input_map[node.id] = node.inputs
+                .filter((input) => input && !input.widget)
+                .map((input) => input.name);
+        })
+        Logger.log_detail("stored node_input_map", this.node_input_map);
+    }
+
+
+    clean_ue_node(node) {
+        var expected_inputs = 1
+
+        // remove all the 'anything' inputs (because they may be duplicated)
+        const removed = node.inputs.filter(i=>(i.label==i18n('anything') || i.label=='*'))
+        node.inputs   = node.inputs.filter(i=>(i.label!=i18n('anything') && i.label!='*')) 
+        // add them back as required
+        while (node.inputs.length < expected_inputs) { node.inputs.push(removed.pop()) }
+        // fix the localized names
+        node.inputs.forEach((input) => {
+            if (input) {
+                if (!input.localized_name || input.localized_name.startsWith(i18n('anything'))) input.localized_name = input.name
+            }
+        })
+
+        // set types to match
+        if (node.inputs) {
+            node.inputs.forEach((input) => {
+                if (input.type=='*') {
+                    const graph = node.graph;
+                    if (input.link) {
+                        const llink = graph.links[input.link];
+                        if (link_is_from_subgraph_input(llink)) {
+                            input.type = get_subgraph_input_type(graph, llink.origin_slot);
+                        } else {
+                            input.type = llink.type;
+                        }
+                    } else {
+                        input.type = (input.label && input.label!=i18n('anything')) ? input.label : input.name
+                    }
+                }
+            });
+
+            Logger.log_detail(`clean_ue_node ${node.id} (${node.type})`, node.inputs);
+        }
+    }
+
+    convert_if_pre_116(node) {
+        if (!node) return;
+
+        if (node.properties?.ue_properties?.widget_ue_connectable) return
+        if (node.properties?.widget_ue_connectable) return  // pre 7.0 node which will be converted
+
+        if (is_UEnode(node)) {
+            if (node.properties?.ue_properties?.version) return
+            this.clean_ue_node(node)
+        }
+
+        const widget_names = node.widgets?.map(w => w.name) || [];
+        const inferred_connectable = (this.node_input_map[node.id] || [])
+            .filter((input_name)=>widget_names.includes(input_name));
+        if (!inferred_connectable.length) return
+
+        if (!this.given_message) {
+            Logger.log_info(`Graph was saved with a version of ComfyUI before 1.16, so Global Input will try to work out which widgets are connectable`);
+            this.given_message = true;
+        }
+
+        if (!node.properties.ue_properties) node.properties.ue_properties = {}
+        node.properties.ue_properties['widget_ue_connectable'] = {}
+
+        if (!(this.node_input_map[node.id])) {
+            Logger.log_detail(`node ${node.id} (${node.type} has no node_input_map`);
+        } else {
+            inferred_connectable.forEach((input_name) => {
+                node.properties.ue_properties['widget_ue_connectable'][input_name] = true;
+                this.did_conversion = true;
+                Logger.log_info(`node ${node.id} widget ${input_name} marked as accepting global input links because it was an input when saved`);
+            });
+        }
+    }
+
+    remove_saved_ue_links(graph) {
+        const links = graph.extra?.links_added_by_ue;
+        if (!Array.isArray(links)) return;
+        links.forEach((linkId) => graph.removeLink(linkId));
+        delete graph.extra.links_added_by_ue;
+    }
+}
+
+export const graphConverter = GraphConverter.instance();
+ue_callbacks.register_allgraph_callback('afterConfigureGraph', graphConverter.remove_saved_ue_links)
+
+/*
+Is a node alive (ie not bypassed or set to never)
+*/
+export function node_is_live(node, treat_bypassed_as_live){
+    if (!node) return false;
+    if (node.mode===0) return true;
+    if (node.mode===2 || node.mode===4) return !!treat_bypassed_as_live;
+    Logger.log_error(`node ${node.id} has mode ${node.mode} - I only understand modes 0, 2 and 4`);
+    return true;
+}
+
+function node_is_bypassed(node) {
+    return (node.mode===4);
+}
+
+/*
+Given a link object, and the type of the link,
+go upstream, following links with the same type, until you find a parent node which isn't bypassed.
+If either type or original link is null, or if the upstream thread ends, return null
+*/
+function handle_bypass(original_link, type, graph) {
+    if (!type || !original_link) return null;
+    var link = original_link;
+    if (link_is_from_subgraph_input(link)) return link
+    var parent = get_real_node(link.origin_id, graph);
+    if (!parent) return null;
+    while (node_is_bypassed(parent)) {
+        if (!parent.inputs) return null;
+        var link_id;
+        if (parent?.inputs[link.origin_slot]?.type == type) link_id = parent.inputs[link.origin_slot].link; // try matching number first
+        else link_id = parent.inputs.find((input)=>input.type==type)?.link;
+        if (!link_id) { return null; }
+        link = graph.links[link_id];
+        parent = get_real_node(link.origin_id, graph);
+    }
+    return link;
+}
+
+
+/*
+Does this input connect upstream to a live node?
+*/
+export function is_connected(input, treat_bypassed_as_live, graph) {
+    const link_id = input.link;
+    if (link_id === null) return false;                                    // no connection
+    var the_link = graph.links[link_id];
+    if (!the_link) return false; 
+    if (treat_bypassed_as_live) return true;
+    the_link = handle_bypass(the_link, the_link.type, graph);              // find the link upstream of bypasses
+    if (!the_link) return false;                                           // no source for data.
+    return true;
+}
+
+/*
+Is this a global input node?
+*/
+export function is_UEnode(node) {
+    const type = node?.comfyClass || node?.type;
+    return type === "GlobalInput" || type === "Global Input" || type === "全局输入";
+}
+
+export function node_can_broadcast(node) {
+    return (node.properties?.ue_convert || is_UEnode(node))
+}
+
+
+
+/*
+Inject a call into a method on object with name methodname.
+The injection is added at the end of the existing method (if the method didn't exist, it is created)
+injectionthis and injectionarguments are passed into the apply call (as the this and the arguments)
+*/
+export function inject(object, methodname, tracetext, injection, injectionthis, injectionarguments) {
+    const original = object[methodname];
+    object[methodname] = function() {
+        original?.apply(this, arguments);
+        injection.apply(injectionthis, injectionarguments);
+    }
+}
+
+export class Pausable {
+    constructor(name) {
+        this.name = name
+        this.pause_depth = 0
+    }
+    pause(note, ms) {
+        this.pause_depth += 1;
+        if (this.pause_depth>10) {
+            Logger.log_error(`${this.name} Over pausing`)
+        }
+        Logger.log_detail(`${this.name} pause ${note} with ${ms}`)
+        if (ms) setTimeout( this.unpause.bind(this), ms );
+    }
+    unpause() { 
+        this.pause_depth -= 1
+        Logger.log_detail(`${this.name} unpause`)
+        if (this.pause_depth<0) {
+            Logger.log_error(`${this.name} Over unpausing`)
+            this.pause_depth = 0
+        }
+    this.on_unpause()
+    }
+    paused() {
+        return (this.pause_depth>0)
+    }
+    on_unpause(){}
+}
+
+export function get_connection(node, i) {
+    const graph = node?.graph
+    const link = node?.inputs[i]?.link;
+    if (link && graph.links[link]) {
+        var llink = handle_bypass(graph.links[link], graph.links[link].type, graph) || graph.links[link]
+        return { link:llink, type:llink.type }
+    } 
+    return { link:undefined, type:undefined }
+}
+
+export function is_able_to_broadcast(node, output_name) {
+    if (!node.properties.ue_convert) return false
+    const output = node.outputs.find(i => i.name==output_name);
+    if (!output) {
+        Logger.log_error(`Can't find output ${output_name} on node ${node.title}`);
+        return false;
+    }
+    return ! (node.properties?.ue_properties?.output_not_broadcasting?.[output_name])
+}
+
+export function find_duplicate_broadcasted_types(node) {
+    var the_possibles
+    var connection_finder
+    var check_if_able_to_broadcast
+
+    if (node.properties.ue_convert) {
+        the_possibles = node.outputs
+        connection_finder = connection_from_output_as_input
+        check_if_able_to_broadcast = (node, i) => {
+            const name = node.outputs[i].name
+            return is_able_to_broadcast(node, name)
+        } 
+    } else {
+        check_if_able_to_broadcast = ()=>(true)
+        the_possibles = node.inputs
+        connection_finder = get_connection
+    }
+
+    const broadcasted_types = new Set()
+    const duplicated_broadcasted_types = new Set()
+    for (var i=0; i<the_possibles.length; i++) {
+        const connection = connection_finder(node, i);
+        if (connection.link && check_if_able_to_broadcast(node,i)) {
+            if (broadcasted_types.has(connection.type)) duplicated_broadcasted_types.add(connection.type)
+            broadcasted_types.add(connection.type)
+        }
+    }
+    return duplicated_broadcasted_types
+}

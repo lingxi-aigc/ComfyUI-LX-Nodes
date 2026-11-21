@@ -1,0 +1,13 @@
+-r requirements.txt
+onnxruntime
+transformers
+ctranslate2
+sentencepiece
+accelerate
+transparent-background
+safetensors
+einops
+timm
+opencv-python
+git+https://github.com/shadowcz007/SenseVoice-python.git
+funasr
