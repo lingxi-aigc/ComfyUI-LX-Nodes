@@ -1,5 +1,7 @@
 # ComfyUI-LX-Nodes · 灵犀节点合集
 
+由 **灵犀（Lingxi）** 开发与维护。
+
 **一个 ComfyUI 扩展，覆盖素材批处理、工作流文件管理、运行控制和画布布线。** 可以按原目录交付整批图片，在侧栏整理工作流，右键处理卡住的任务，也可以把横跨几个分组的长线收成设置点和获取点。
 
 | 批量处理与中转 | 工作流管理 | 运行控制 | 画布组织 |
@@ -120,7 +122,13 @@
 
 ### 从 GitHub 安装
 
-1. 在 GitHub 仓库页点击 **Code → HTTPS** 复制仓库地址，然后在 `ComfyUI/custom_nodes/` 中用 `git clone` 克隆。也可以点 **Code → Download ZIP**，解压后把包含 `__init__.py` 的目录放到 `ComfyUI/custom_nodes/ComfyUI-LX-Nodes`。
+1. 在 `ComfyUI/custom_nodes/` 中克隆仓库。
+
+   ```bash
+   git clone https://github.com/lingxi-aigc/ComfyUI-LX-Nodes.git
+   ```
+
+   也可以在仓库页点 **Code → Download ZIP**，解压后把包含 `__init__.py` 的目录放到 `ComfyUI/custom_nodes/ComfyUI-LX-Nodes`。
 2. 进入插件目录，用 **运行 ComfyUI 的 Python** 安装基础依赖。
 
    ```bash
